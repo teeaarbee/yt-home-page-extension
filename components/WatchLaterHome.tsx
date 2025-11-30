@@ -28,6 +28,8 @@ const WatchLaterHome: React.FC = () => {
         e.preventDefault(); // Prevent clicking the link
         e.stopPropagation();
 
+        console.log('handleRemove called', { videoId, setVideoId });
+
         // Optimistic update
         setVideos(prev => prev.filter(v => v.id !== videoId));
         setShuffledVideos(prev => prev.filter(v => v.id !== videoId));
@@ -61,15 +63,15 @@ const WatchLaterHome: React.FC = () => {
                 <h1 className="wl-title">Watch Later</h1>
                 <div className="wl-controls">
                     <button
-                        className={`wl-btn ${sortOrder === 'default' ? 'active' : ''}`}
-                        onClick={() => setSortOrder('default')}
+                        className={`wl-btn ${sortOrder === 'reverse' ? 'active' : ''}`}
+                        onClick={() => setSortOrder('reverse')}
                         title="Show newest added videos first"
                     >
                         Newest
                     </button>
                     <button
-                        className={`wl-btn ${sortOrder === 'reverse' ? 'active' : ''}`}
-                        onClick={() => setSortOrder('reverse')}
+                        className={`wl-btn ${sortOrder === 'default' ? 'active' : ''}`}
+                        onClick={() => setSortOrder('default')}
                         title="Show oldest added videos first"
                     >
                         Oldest
@@ -91,7 +93,7 @@ const WatchLaterHome: React.FC = () => {
                             <span className="wl-duration">{video.duration}</span>
                             <button
                                 className="wl-remove-btn"
-                                onClick={(e) => handleRemove(e, video.id)}
+                                onClick={(e) => handleRemove(e, video.id, video.setVideoId)}
                                 title="Remove from Watch Later"
                             >
                                 ×

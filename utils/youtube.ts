@@ -36,17 +36,23 @@ export async function getWatchLaterVideos(): Promise<Video[]> {
         const videos: Video[] = contents
             .map((item: any) => item.playlistVideoRenderer)
             .filter((item: any) => item) // Filter out nulls or non-video items
-            .map((item: any) => ({
-                id: item.videoId,
-                setVideoId: item.setVideoId, // Extract setVideoId
-                title: item.title.runs[0].text,
-                thumbnail: item.thumbnail.thumbnails.pop()?.url || '', // Get largest thumbnail
-                duration: item.lengthText?.simpleText || '',
-                channelName: item.shortBylineText?.runs[0]?.text || '',
-                channelUrl: item.shortBylineText?.runs[0]?.navigationEndpoint?.commandMetadata?.webCommandMetadata?.url || '',
-                views: item.videoInfo?.runs?.[0]?.text || '', // Sometimes views are here
-                url: `/watch?v=${item.videoId}&list=WL`, // Keep it in the playlist context
-            }));
+            .map((item: any) => {
+                // Debug logging to find setVideoId
+                if (!item.setVideoId) {
+                    console.log('Missing setVideoId for item:', item);
+                }
+                return {
+                    id: item.videoId,
+                    setVideoId: item.setVideoId || '', // Extract setVideoId
+                    title: item.title.runs[0].text,
+                    thumbnail: item.thumbnail.thumbnails.pop()?.url || '', // Get largest thumbnail
+                    duration: item.lengthText?.simpleText || '',
+                    channelName: item.shortBylineText?.runs[0]?.text || '',
+                    channelUrl: item.shortBylineText?.runs[0]?.navigationEndpoint?.commandMetadata?.webCommandMetadata?.url || '',
+                    views: item.videoInfo?.runs?.[0]?.text || '', // Sometimes views are here
+                    url: `/watch?v=${item.videoId}&list=WL`, // Keep it in the playlist context
+                };
+            });
 
         return videos;
     } catch (error) {
@@ -79,6 +85,7 @@ async function getClientConfig() {
 }
 
 export async function removeVideoFromWatchLater(setVideoId: string): Promise<boolean> {
+    console.log('removeVideoFromWatchLater called with:', setVideoId);
     const { apiKey, clientVersion } = await getClientConfig();
     if (!apiKey || !clientVersion) {
         console.error('Could not find API key or client version');
@@ -88,6 +95,7 @@ export async function removeVideoFromWatchLater(setVideoId: string): Promise<boo
     try {
         const response = await fetch(`https://www.youtube.com/youtubei/v1/browse/edit_playlist?key=${apiKey}`, {
             method: 'POST',
+            credentials: 'include', // Important for sending cookies
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -100,7 +108,7 @@ export async function removeVideoFromWatchLater(setVideoId: string): Promise<boo
                 },
                 actions: [
                     {
-                        action: 'ACTION_REMOVE_VIDEO',
+                        action: 'ACTION_REMOVE_VIDEO_BY_SET_VIDEO_ID',
                         setVideoId: setVideoId,
                     },
                 ],
@@ -108,8 +116,33 @@ export async function removeVideoFromWatchLater(setVideoId: string): Promise<boo
             }),
         });
 
-        const data = await response.json();
-        return data.status === 'STATUS_SUCCEEDED' || !!data.actions; // Basic success check
+        console.log('Remove video response status:', response.status); // Debug logging
+
+        // Check if response is OK (200-299)
+        if (!response.ok) {
+            console.error('API request failed with status:', response.status);
+            return false;
+        }
+
+        // Get the response text first
+        const responseText = await response.text();
+        console.log('Remove video response text:', responseText); // Debug logging
+
+        // If the response is empty, but status was OK, consider it a success
+        if (!responseText || responseText.trim() === '') {
+            console.log('Empty response but status was OK, treating as success');
+            return true;
+        }
+
+        // Try to parse as JSON
+        try {
+            const data = JSON.parse(responseText);
+            console.log('Remove video response data:', data); // Debug logging
+            return data.status === 'STATUS_SUCCEEDED' || !!data.actions;
+        } catch (jsonError) {
+            console.warn('Could not parse response as JSON, but request succeeded');
+            return true; // If status was OK but response isn't JSON, still consider it success
+        }
     } catch (error) {
         console.error('Error removing video:', error);
         return false;
