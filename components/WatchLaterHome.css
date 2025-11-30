@@ -1,5 +1,7 @@
 .wl-container {
     padding: 24px;
+    padding-top: 80px;
+    /* Ensure it clears the fixed header */
     background-color: #0f0f0f;
     /* YouTube Dark Mode bg */
     color: white;
@@ -12,6 +14,8 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 24px;
+    position: relative;
+    z-index: 10;
 }
 
 .wl-title {
@@ -27,8 +31,10 @@
 }
 
 .wl-btn {
-    background-color: rgba(255, 255, 255, 0.1);
-    border: none;
+    background-color: rgba(255, 255, 255, 0.2);
+    /* Increased visibility */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    /* Add border */
     color: #f1f1f1;
     padding: 6px 12px;
     border-radius: 18px;
