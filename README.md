@@ -27,7 +27,7 @@ Instead of random recommendations designed to keep you scrolling, you'll see **o
 
 1.  **Clone the repo**
     ```bash
-    git clone https://github.com/yourusername/yt-watch-later-focus.git
+    git clone https://github.com/teeaarbee/yt-watch-later-focus.git
     ```
 
 2.  **Install dependencies**
@@ -58,5 +58,5 @@ Got an idea? Found a bug? Feel free to open an issue or submit a PR. Let's make 
 ---
 
 <div align="center">
-  <sub>Built with ❤️ by <a href="https://github.com/trb">trb</a></sub>
+  <sub>Built with ❤️ by <a href="https://github.com/teeaarbee">teeaarbee</a></sub>
 </div>
