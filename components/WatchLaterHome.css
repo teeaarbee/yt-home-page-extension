@@ -57,9 +57,28 @@
 
 .wl-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
+    /* Force 4 columns */
     gap: 16px;
     row-gap: 40px;
+}
+
+@media (max-width: 1100px) {
+    .wl-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 800px) {
+    .wl-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 500px) {
+    .wl-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 .wl-card {
@@ -112,6 +131,40 @@
     border-radius: 4px;
     font-size: 12px;
     font-weight: 500;
+}
+
+.wl-remove-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 28px;
+    /* Slightly larger */
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 1;
+    /* Always visible */
+    transition: background-color 0.2s;
+    font-size: 20px;
+    line-height: 1;
+    padding-bottom: 2px;
+    /* Center the x visually */
+    z-index: 5;
+    /* Ensure on top */
+}
+
+/* .wl-card:hover .wl-remove-btn {
+    opacity: 1;
+} */
+
+.wl-remove-btn:hover {
+    background-color: #cc0000;
 }
 
 .wl-info {

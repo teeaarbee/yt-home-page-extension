@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getWatchLaterVideos, Video } from '../utils/youtube';
+import { getWatchLaterVideos, removeVideoFromWatchLater, Video } from '../utils/youtube';
 import './WatchLaterHome.css';
 
 const WatchLaterHome: React.FC = () => {
@@ -24,6 +24,23 @@ const WatchLaterHome: React.FC = () => {
         setSortOrder('random');
     };
 
+    const handleRemove = async (e: React.MouseEvent, videoId: string, setVideoId: string) => {
+        e.preventDefault(); // Prevent clicking the link
+        e.stopPropagation();
+
+        // Optimistic update
+        setVideos(prev => prev.filter(v => v.id !== videoId));
+        setShuffledVideos(prev => prev.filter(v => v.id !== videoId));
+
+        const success = await removeVideoFromWatchLater(setVideoId);
+        if (!success) {
+            // Revert if failed (optional, but good UX)
+            // For now, we'll just log error, maybe show toast
+            console.error('Failed to remove video');
+            // In a real app we might fetch again or revert state
+        }
+    };
+
     const currentVideos = React.useMemo(() => {
         if (sortOrder === 'random') return shuffledVideos;
         if (sortOrder === 'reverse') return [...videos].reverse();
@@ -44,15 +61,15 @@ const WatchLaterHome: React.FC = () => {
                 <h1 className="wl-title">Watch Later</h1>
                 <div className="wl-controls">
                     <button
-                        className={`wl-btn ${sortOrder === 'reverse' ? 'active' : ''}`}
-                        onClick={() => setSortOrder('reverse')}
+                        className={`wl-btn ${sortOrder === 'default' ? 'active' : ''}`}
+                        onClick={() => setSortOrder('default')}
                         title="Show newest added videos first"
                     >
                         Newest
                     </button>
                     <button
-                        className={`wl-btn ${sortOrder === 'default' ? 'active' : ''}`}
-                        onClick={() => setSortOrder('default')}
+                        className={`wl-btn ${sortOrder === 'reverse' ? 'active' : ''}`}
+                        onClick={() => setSortOrder('reverse')}
                         title="Show oldest added videos first"
                     >
                         Oldest
@@ -72,6 +89,13 @@ const WatchLaterHome: React.FC = () => {
                         <div className="wl-thumbnail-wrapper">
                             <img src={video.thumbnail} alt={video.title} className="wl-thumbnail" />
                             <span className="wl-duration">{video.duration}</span>
+                            <button
+                                className="wl-remove-btn"
+                                onClick={(e) => handleRemove(e, video.id)}
+                                title="Remove from Watch Later"
+                            >
+                                ×
+                            </button>
                         </div>
                         <div className="wl-info">
                             <h3 className="wl-video-title" title={video.title}>{video.title}</h3>
