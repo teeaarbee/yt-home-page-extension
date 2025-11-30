@@ -1,0 +1,100 @@
+.wl-container {
+    padding: 24px;
+    background-color: #0f0f0f;
+    /* YouTube Dark Mode bg */
+    color: white;
+    min-height: 100vh;
+    font-family: Roboto, Arial, sans-serif;
+}
+
+.wl-title {
+    font-size: 24px;
+    margin-bottom: 24px;
+    font-weight: bold;
+}
+
+.wl-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+}
+
+.wl-card {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.wl-thumbnail-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/9;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+.wl-thumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.2s;
+}
+
+.wl-card:hover .wl-thumbnail {
+    transform: scale(1.02);
+    border-radius: 0;
+    /* YouTube style hover effect often sharpens corners or keeps them, let's keep radius actually */
+    border-radius: 12px;
+}
+
+.wl-duration {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 3px 4px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.wl-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.wl-video-title {
+    margin: 0 0 6px 0;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.4;
+    max-height: 2.8em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.wl-meta {
+    font-size: 14px;
+    color: #aaa;
+}
+
+.wl-channel {
+    display: block;
+}
+
+.wl-loading,
+.wl-empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+    font-size: 18px;
+    color: #aaa;
+}
