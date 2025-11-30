@@ -4,7 +4,7 @@ import '../components/WatchLaterHome.css';
 
 export default defineContentScript({
   matches: ['https://www.youtube.com/*'],
-  cssInjectionMode: 'ui', // Inject CSS automatically
+  // cssInjectionMode: 'ui', // Removed to allow auto injection
   async main(ctx) {
     const mountWatchLater = () => {
       if (window.location.pathname === '/') {
